@@ -1,0 +1,659 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class projeto {
+
+    static Scanner sc = new Scanner(System.in);
+
+    static ArrayList<Produto> produtos = new ArrayList<>();
+    static ArrayList<Cliente> clientes = new ArrayList<>();
+
+    static final String ARQ_PRODUTOS = "produtos.csv";
+    static final String ARQ_CLIENTES = "clientes.csv";
+
+    public static void main(String[] args) {
+
+        carregarProdutos();
+        carregarClientes();
+
+        int opcao;
+
+        do {
+
+            System.out.println("\n========================");
+            System.out.println("      MINI MERCADO KM    ");
+            System.out.println("========================");
+            System.out.println("1 - Produtos");
+            System.out.println("2 - Clientes");
+            System.out.println("3 - Realizar Compra");
+            System.out.println("0 - Sair");
+            System.out.print("Escolha: ");
+
+            opcao = sc.nextInt();
+
+            switch (opcao) {
+
+                case 1:
+                    menuProdutos();
+                    break;
+
+                case 2:
+                    menuClientes();
+                    break;
+
+                case 3:
+                    realizarCompra();
+                    break;
+
+                case 0:
+                    System.out.println("Sistema encerrado.");
+                    break;
+
+                default:
+                    System.out.println("Opção inválida.");
+            }
+
+        } while (opcao != 0);
+    }
+
+    // ================= PRODUTOS =================
+
+    public static void menuProdutos() {
+
+        int op;
+
+        do {
+
+            System.out.println("\n===== PRODUTOS =====");
+            System.out.println("1 - Cadastrar");
+            System.out.println("2 - Listar");
+            System.out.println("3 - Buscar");
+            System.out.println("4 - Alterar");
+            System.out.println("5 - Remover");
+            System.out.println("0 - Voltar");
+            System.out.print("Escolha: ");
+
+            op = sc.nextInt();
+
+            switch (op) {
+
+                case 1:
+                    cadastrarProduto();
+                    break;
+
+                case 2:
+                    listarProdutos();
+                    break;
+
+                case 3:
+                    buscarProduto();
+                    break;
+
+                case 4:
+                    alterarProduto();
+                    break;
+
+                case 5:
+                    removerProduto();
+                    break;
+            }
+
+        } while (op != 0);
+    }
+
+    public static void cadastrarProduto() {
+
+        System.out.print("Código: ");
+        int codigo = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Nome: ");
+        String nome = sc.nextLine();
+
+        System.out.print("Preço: ");
+        double preco = sc.nextDouble();
+
+        System.out.print("Estoque: ");
+        int estoque = sc.nextInt();
+
+        Produto p = new Produto(codigo, nome, preco, estoque);
+
+        produtos.add(p);
+
+        salvarProdutos();
+
+        System.out.println("Produto cadastrado!");
+    }
+
+    public static void listarProdutos() {
+
+        System.out.println("\n===== PRODUTOS =====");
+
+        if (produtos.size() == 0) {
+
+            System.out.println("Nenhum produto cadastrado.");
+        }
+
+        for (Produto p : produtos) {
+
+            System.out.println(p);
+        }
+    }
+
+    public static void buscarProduto() {
+
+        System.out.print("Digite o código: ");
+        int codigo = sc.nextInt();
+
+        boolean encontrou = false;
+
+        for (Produto p : produtos) {
+
+            if (p.codigo == codigo) {
+
+                System.out.println(p);
+                encontrou = true;
+            }
+        }
+
+        if (!encontrou) {
+
+            System.out.println("Produto não encontrado.");
+        }
+    }
+
+    public static void alterarProduto() {
+
+        System.out.print("Digite o código: ");
+        int codigo = sc.nextInt();
+        sc.nextLine();
+
+        boolean encontrou = false;
+
+        for (Produto p : produtos) {
+
+            if (p.codigo == codigo) {
+
+                System.out.print("Novo nome: ");
+                p.nome = sc.nextLine();
+
+                System.out.print("Novo preço: ");
+                p.preco = sc.nextDouble();
+
+                System.out.print("Novo estoque: ");
+                p.estoque = sc.nextInt();
+
+                salvarProdutos();
+
+                System.out.println("Produto alterado!");
+
+                encontrou = true;
+            }
+        }
+
+        if (!encontrou) {
+
+            System.out.println("Produto não encontrado.");
+        }
+    }
+
+    public static void removerProduto() {
+
+        System.out.print("Digite o código: ");
+        int codigo = sc.nextInt();
+
+        Produto remover = null;
+
+        for (Produto p : produtos) {
+
+            if (p.codigo == codigo) {
+
+                remover = p;
+            }
+        }
+
+        if (remover != null) {
+
+            produtos.remove(remover);
+
+            salvarProdutos();
+
+            System.out.println("Produto removido!");
+        } else {
+
+            System.out.println("Produto não encontrado.");
+        }
+    }
+
+    // ================= CLIENTES =================
+
+    public static void menuClientes() {
+
+        int op;
+
+        do {
+
+            System.out.println("\n===== CLIENTES =====");
+            System.out.println("1 - Cadastrar");
+            System.out.println("2 - Listar");
+            System.out.println("3 - Buscar");
+            System.out.println("4 - Alterar");
+            System.out.println("5 - Remover");
+            System.out.println("0 - Voltar");
+            System.out.print("Escolha: ");
+
+            op = sc.nextInt();
+
+            switch (op) {
+
+                case 1:
+                    cadastrarCliente();
+                    break;
+
+                case 2:
+                    listarClientes();
+                    break;
+
+                case 3:
+                    buscarCliente();
+                    break;
+
+                case 4:
+                    alterarCliente();
+                    break;
+
+                case 5:
+                    removerCliente();
+                    break;
+            }
+
+        } while (op != 0);
+    }
+
+    public static void cadastrarCliente() {
+
+        sc.nextLine();
+
+        System.out.print("CPF: ");
+        String cpf = sc.nextLine();
+
+        System.out.print("Nome: ");
+        String nome = sc.nextLine();
+
+        System.out.print("Telefone: ");
+        String telefone = sc.nextLine();
+
+        System.out.print("Email: ");
+        String email = sc.nextLine();
+
+        Cliente c = new Cliente(cpf, nome, telefone, email);
+
+        clientes.add(c);
+
+        salvarClientes();
+
+        System.out.println("Cliente cadastrado!");
+    }
+
+    public static void listarClientes() {
+
+        System.out.println("\n===== CLIENTES =====");
+
+        if (clientes.size() == 0) {
+
+            System.out.println("Nenhum cliente cadastrado.");
+        }
+
+        for (Cliente c : clientes) {
+
+            System.out.println(c);
+        }
+    }
+
+    public static void buscarCliente() {
+
+        sc.nextLine();
+
+        System.out.print("Digite o CPF: ");
+        String cpf = sc.nextLine();
+
+        boolean encontrou = false;
+
+        for (Cliente c : clientes) {
+
+            if (c.cpf.equals(cpf)) {
+
+                System.out.println(c);
+                encontrou = true;
+            }
+        }
+
+        if (!encontrou) {
+
+            System.out.println("Cliente não encontrado.");
+        }
+    }
+
+    public static void alterarCliente() {
+
+        sc.nextLine();
+
+        System.out.print("Digite o CPF: ");
+        String cpf = sc.nextLine();
+
+        boolean encontrou = false;
+
+        for (Cliente c : clientes) {
+
+            if (c.cpf.equals(cpf)) {
+
+                System.out.print("Novo nome: ");
+                c.nome = sc.nextLine();
+
+                System.out.print("Novo telefone: ");
+                c.telefone = sc.nextLine();
+
+                System.out.print("Novo email: ");
+                c.email = sc.nextLine();
+
+                salvarClientes();
+
+                System.out.println("Cliente alterado!");
+
+                encontrou = true;
+            }
+        }
+
+        if (!encontrou) {
+
+            System.out.println("Cliente não encontrado.");
+        }
+    }
+
+    public static void removerCliente() {
+
+        sc.nextLine();
+
+        System.out.print("Digite o CPF: ");
+        String cpf = sc.nextLine();
+
+        Cliente remover = null;
+
+        for (Cliente c : clientes) {
+
+            if (c.cpf.equals(cpf)) {
+
+                remover = c;
+            }
+        }
+
+        if (remover != null) {
+
+            clientes.remove(remover);
+
+            salvarClientes();
+
+            System.out.println("Cliente removido!");
+        } else {
+
+            System.out.println("Cliente não encontrado.");
+        }
+    }
+
+    // ================= COMPRA =================
+
+    public static void realizarCompra() {
+
+        sc.nextLine();
+
+        double total = 0;
+
+        System.out.println("\n===== REALIZAR COMPRA =====");
+
+        while (true) {
+
+            listarProdutos();
+
+            System.out.print("\nCódigo do produto (0 para finalizar): ");
+            int codigo = sc.nextInt();
+
+            if (codigo == 0) {
+
+                break;
+            }
+
+            Produto produto = null;
+
+            for (Produto p : produtos) {
+
+                if (p.codigo == codigo) {
+
+                    produto = p;
+                }
+            }
+
+            if (produto == null) {
+
+                System.out.println("Produto não encontrado.");
+                continue;
+            }
+
+            System.out.print("Quantidade: ");
+            int qtd = sc.nextInt();
+
+            if (qtd > produto.estoque) {
+
+                System.out.println("Estoque insuficiente.");
+                continue;
+            }
+
+            double subtotal = qtd * produto.preco;
+
+            produto.estoque -= qtd;
+
+            total += subtotal;
+
+            System.out.println("Produto: " + produto.nome);
+            System.out.println("Subtotal: R$ " + subtotal);
+        }
+
+        salvarProdutos();
+
+        System.out.println("\nTOTAL DA COMPRA: R$ " + total);
+    }
+
+    // ================= CSV PRODUTOS =================
+
+    public static void salvarProdutos() {
+
+        try {
+
+            PrintWriter writer = new PrintWriter(
+                    new FileWriter(ARQ_PRODUTOS)
+            );
+
+            writer.println("codigo;nome;preco;estoque");
+
+            for (Produto p : produtos) {
+
+                writer.println(
+                        p.codigo + ";" +
+                        p.nome + ";" +
+                        p.preco + ";" +
+                        p.estoque
+                );
+            }
+
+            writer.close();
+
+        } catch (IOException e) {
+
+            System.out.println("Erro ao salvar produtos.");
+        }
+    }
+
+    public static void carregarProdutos() {
+
+        try {
+
+            BufferedReader reader = new BufferedReader(
+                    new FileReader(ARQ_PRODUTOS)
+            );
+
+            String linha;
+
+            while ((linha = reader.readLine()) != null) {
+
+                // IGNORA CABEÇALHO
+                if (linha.startsWith("codigo")) {
+                    continue;
+                }
+
+                String[] partes = linha.split(";");
+
+                Produto p = new Produto(
+                        Integer.parseInt(partes[0]),
+                        partes[1],
+                        Double.parseDouble(partes[2]),
+                        Integer.parseInt(partes[3])
+                );
+
+                produtos.add(p);
+            }
+
+            reader.close();
+
+        } catch (IOException e) {
+
+            System.out.println("Arquivo produtos.csv não encontrado.");
+        }
+    }
+
+    // ================= CSV CLIENTES =================
+
+    public static void salvarClientes() {
+
+        try {
+
+            PrintWriter writer = new PrintWriter(
+                    new FileWriter(ARQ_CLIENTES)
+            );
+
+            writer.println("cpf;nome;telefone;email");
+
+            for (Cliente c : clientes) {
+
+                writer.println(
+                        c.cpf + ";" +
+                        c.nome + ";" +
+                        c.telefone + ";" +
+                        c.email
+                );
+            }
+
+            writer.close();
+
+        } catch (IOException e) {
+
+            System.out.println("Erro ao salvar clientes.");
+        }
+    }
+
+    public static void carregarClientes() {
+
+        try {
+
+            BufferedReader reader = new BufferedReader(
+                    new FileReader(ARQ_CLIENTES)
+            );
+
+            String linha;
+
+            while ((linha = reader.readLine()) != null) {
+
+                // IGNORA CABEÇALHO
+                if (linha.startsWith("cpf")) {
+                    continue;
+                }
+
+                String[] partes = linha.split(";");
+
+                Cliente c = new Cliente(
+                        partes[0],
+                        partes[1],
+                        partes[2],
+                        partes[3]
+                );
+
+                clientes.add(c);
+            }
+
+            reader.close();
+
+        } catch (IOException e) {
+
+            System.out.println("Arquivo clientes.csv não encontrado.");
+        }
+    }
+}
+
+// ================= CLASSE PRODUTO =================
+
+class Produto {
+
+    int codigo;
+    String nome;
+    double preco;
+    int estoque;
+
+    public Produto(int codigo, String nome, double preco, int estoque) {
+
+        this.codigo = codigo;
+        this.nome = nome;
+        this.preco = preco;
+        this.estoque = estoque;
+    }
+
+    @Override
+    public String toString() {
+
+        return "Código: " + codigo +
+                " | Nome: " + nome +
+                " | Preço: R$ " + preco +
+                " | Estoque: " + estoque;
+    }
+}
+
+// ================= CLASSE CLIENTE =================
+
+class Cliente {
+
+    String cpf;
+    String nome;
+    String telefone;
+    String email;
+
+    public Cliente(
+            String cpf,
+            String nome,
+            String telefone,
+            String email
+    ) {
+
+        this.cpf = cpf;
+        this.nome = nome;
+        this.telefone = telefone;
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+
+        return "CPF: " + cpf +
+                " | Nome: " + nome +
+                " | Telefone: " + telefone +
+                " | Email: " + email;
+    }
+}
+ 
